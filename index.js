@@ -31,7 +31,7 @@ async function run() {
         const cartCollection = client.db("upFluentDB").collection("enrolls")
 
 
-        app.get("/api/courses", async (req, res) => {
+        app.get("/courses", async (req, res) => {
             //const result = await courseCollection.find().toArray()
 
             res.send("test ");
