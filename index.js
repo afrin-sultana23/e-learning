@@ -30,6 +30,7 @@ async function run() {
 
         const courseCollection = client.db("upFluentDB").collection("courses");
         const cartCollection = client.db("upFluentDB").collection("enrolls")
+        const userCollection = client.db("upFluentDB").collection("users");
 
         app.post("/", async (req, res) => {
 
@@ -75,6 +76,12 @@ async function run() {
                 throw error;
             }
         });
+
+        app.post("/users", async (req, res) => {
+            const newItem = req.body;
+            const result = await userCollection.insertOne(newItem)
+            res.send(result);
+        })
 
         app.get("/courses", async (req, res) => {
             const result = await courseCollection.find().toArray()
