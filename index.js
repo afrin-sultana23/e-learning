@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
-const nodemailer = require("nodemailer");
+const axios = require('axios');
 
 app.use(express.json());
 app.use(cors());
@@ -22,6 +22,7 @@ const client = new MongoClient(uri, {
     }
 });
 
+
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -33,49 +34,46 @@ async function run() {
         app.post("/", async (req, res) => {
 
             const {email, name} = req.body;
-                const msg = JSON.stringify({
-                    "Messages": [{
-                        "From": {"Email": "afriin474@gmail.com", "Name": "Automated Mail - UpFluent Email"},
-                        "To": [{"Email": email, "Name": name}],
-                        "Subject": "THANKS FOR SUBSCRIBE !!!",
-                        "TextPart": "Welcome to upfluent."
-                    }]
-                });
-                
-                const headers = {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-                    'Access-Control-Allow-Credentials': 'true',
-                    'Access-Control-Max-Age': '3600',
-                    'Access-Control-Expose-Headers': 'Content-Length, X-JSON',
-                    'Cross-Origin-Resource-Policy': 'same-origin',
-                    'Cross-Origin-Opener-Policy': 'same-origin',
-                    'Cross-Origin-Embedder-Policy': 'require-corp',
-                    'Content-Security-Policy': "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests",
-                    'X-XSS-Protection': '1; mode=block'
-                };
+            const msg = JSON.stringify({
+                "Messages": [{
+                    "From": {"Email": "afrinsultana1337@gmail.com", "Name": "Automated Mail - UpFluent Email"},
+                    "To": [{"Email": email, "Name": name}],
+                    "Subject": "THANKS FOR SUBSCRIBE !!!",
+                    "TextPart": "Welcome to upfluent."
+                }]
+            });
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+                'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+                'Access-Control-Allow-Credentials': 'true',
+                'Access-Control-Max-Age': '3600',
+                'Access-Control-Expose-Headers': 'Content-Length, X-JSON',
+                'Cross-Origin-Resource-Policy': 'same-origin',
+                'Cross-Origin-Opener-Policy': 'same-origin',
+                'Cross-Origin-Embedder-Policy': 'require-corp',
+                'Content-Security-Policy': "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests",
+                'X-XSS-Protection': '1; mode=block'
+            };
 
-                const config = {
-                    method: 'post',
-                    url: 'https://api.mailjet.com/v3.1/send',
-                    data: msg,
-                    headers: headers,
-                    auth: {username: '0adba42260a8e3816a0f4ac2501194a4', password: '4b313b831b8ef7ed7f8979eae8c3adc8'},
-                };
-            
-                try {
-                    const response = await axios(config);
-                    console.log(JSON.stringify(response.data));
-                    return response.data;
-                } catch (error) {
-                    console.error('Error sending email:', error);
-                    throw error;
-                }
+            const config = {
+                method: 'post',
+                url: 'https://api.mailjet.com/v3.1/send',
+                data: msg,
+                headers: headers,
+                auth: {username: 'ff7352a7ecdf4a3106a3b7d241829615', password: 'b0ac5d2c8832fcb346733ad3233d301b'},
+            };
         
-            
-            
+            try {
+                const response = await axios(config);
+                console.log(JSON.stringify(response.data));
+                return response.data;
+            } catch (error) {
+                console.error('Error sending email:', error);
+                throw error;
+            }
         });
 
         app.get("/courses", async (req, res) => {
