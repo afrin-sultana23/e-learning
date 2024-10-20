@@ -83,9 +83,37 @@ async function run() {
         })
 
         app.post("/users", async (req, res) => {
-            const newItem = req.body;
-            const result = await userCollection.insertOne(newItem)
+            const user = req.body;
+            console.log(user);
+            const query = {email: user.email}
+            const existingUser =  await userCollection.findOne(query)
+            console.log(existingUser)
+            if(existingUser) {
+                return res.send({message: "User already exists"})
+            }
+            const result = await userCollection.insertOne(user);
             res.send(result);
+        })
+
+        app.get("/users/admin/:email", async (req, res) => {
+            const email = req.params.email;
+            console.log('email:', email)
+            const query = { email: email}
+            const user = await userCollection.findOne(query);
+            const result = { admin: user?.role === 'admin'}
+            res.send(result)
+        })
+
+        app.patch("/users/admin/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id)}
+            const updateDoc = {
+                $set: {
+                    role: "admin",
+                },
+            }
+            const result = await userCollection.updateOne(filter, updateDoc)
+            res.send(result)
         })
 
         app.get("/courses", async (req, res) => {
