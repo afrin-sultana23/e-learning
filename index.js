@@ -84,16 +84,23 @@ async function run() {
 
         app.post("/users", async (req, res) => {
             const user = req.body;
-            console.log(user);
-            const query = {email: user.email}
-            const existingUser =  await userCollection.findOne(query)
-            console.log(existingUser)
-            if(existingUser) {
-                return res.send({message: "User already exists"})
+            console.log('User Data:', user);
+        
+            const query = { email: user.email };
+            const existingUser = await userCollection.findOne(query);
+            
+            if (existingUser) {
+                return res.send({ message: "User already exists" });
             }
-            const result = await userCollection.insertOne(user);
-            res.send(result);
-        })
+        
+            try {
+                const result = await userCollection.insertOne(user);
+                res.send(result);
+            } catch (error) {
+                console.error("Error inserting user:", error);
+                res.status(500).send({ message: "Error inserting user" });
+            }
+        });
 
         app.get("/users/admin/:email", async (req, res) => {
             const email = req.params.email;
