@@ -7,12 +7,8 @@ const port = process.env.PORT || 5000;
 const axios = require('axios');
 
 app.use(express.json());
-const corsOptions ={
-    origin:'http://localhost:5173', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
+
+app.use(cors());
 
 
 
@@ -153,9 +149,31 @@ async function run() {
         })
 
         app.get('/cart', async (req, res) => {
-            const result = await cartCollection.find().toArray();
-            res.send(result)
-        })
+            try {
+                const enrolls = await db.collection('enrolls').find().toArray();
+                res.status(200).json(enrolls);
+            } catch (error) {
+                console.error("Error fetching cart items:", error);
+                res.status(500).json({ message: 'Error fetching cart items' });
+            }
+        });
+
+        app.delete('/cart/:id', async (req, res) => {
+            const { id } = req.params;
+        
+            try {
+                const result = await db.collection('enrolls').deleteOne({ _id: new ObjectId(id) });
+        
+                if (result.deletedCount === 1) {
+                    res.status(200).json({ deletedCount: 1 });
+                } else {
+                    res.status(404).json({ deletedCount: 0, message: 'Course not found' });
+                }
+            } catch (error) {
+                console.error("Error deleting course:", error);
+                res.status(500).json({ message: 'Error deleting course' });
+            }
+        });
 
 
         // Send a ping to confirm a successful connection
