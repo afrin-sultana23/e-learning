@@ -149,30 +149,23 @@ async function run() {
         })
 
         app.get('/cart', async (req, res) => {
-            try {
-                const enrolls = await db.collection('enrolls').find().toArray();
-                res.status(200).json(enrolls);
-            } catch (error) {
-                console.error("Error fetching cart items:", error);
-                res.status(500).json({ message: 'Error fetching cart items' });
-            }
+            const enrolls = await cartCollection.find().toArray();
+            res.send(enrolls) 
+            
         });
 
         app.delete('/cart/:id', async (req, res) => {
             const { id } = req.params;
         
-            try {
-                const result = await db.collection('enrolls').deleteOne({ _id: new ObjectId(id) });
+           
+                const result = await cartCollection.deleteOne({ _id: new ObjectId(id) });
         
                 if (result.deletedCount === 1) {
                     res.status(200).json({ deletedCount: 1 });
                 } else {
                     res.status(404).json({ deletedCount: 0, message: 'Course not found' });
                 }
-            } catch (error) {
-                console.error("Error deleting course:", error);
-                res.status(500).json({ message: 'Error deleting course' });
-            }
+            res.send(result)
         });
 
 
